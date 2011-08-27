@@ -11,7 +11,9 @@ object redpanda{
 
   def main(args: Array[String]) {
   println("Hey")
-  startMongo
+  // startMongo
+  val hunter = new Source
+  println(hunter.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
   }
   
 
@@ -19,7 +21,7 @@ object redpanda{
 
 case class Persistance {}
 
-sealed trait MongoDBPersistence extends Persistence {
+sealed trait MongoDBPersistence {
   def startMongo = {
     val mongoConn = MongoConnection()
     val db = mongoConn("forest")
@@ -47,7 +49,7 @@ trait Engine{}
 */
 class Source {
 
-  def fetchJob(uri: String ): Stream(Any) = {
+  def fetchJob(uri: String ):Elem = {
     // lets see what my quirky mind puts together
     // long term I don't know if there's any min/max amount of data that can be collected in 
     // one swoop.  Is a stream bad idea?
@@ -57,7 +59,12 @@ class Source {
     val url = new URL(uri)
     val connection = url.openConnection
     XML.load(connection.getInputStream)
-  }
+    
+
+//    val showJob = fetchJob("view-source:http://rss.dice.com//system/raleigh-jobs.xml")
+    }
+ //   val data_stream = cons(resource,cons("",Stream.empty))
+  
 }
 
 
