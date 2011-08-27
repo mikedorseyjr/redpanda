@@ -14,6 +14,7 @@ object redpanda {
   // startMongo
   val mongoPersist = new MongoDBPersistence
   mongoPersist.startMongo
+  mongoPersist.testMongo("redwood", "Jamal", "New", "test")
   val hunter = new Source
   println(hunter.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
   }
@@ -29,13 +30,17 @@ class MongoDBPersistence extends Persistence {
     val db = mongoConn("forest")
     db.dropDatabase()
     println("Mongo Started")
-    val mongo = db("events")
+  }
+      
 
-    val eventBuilder = MongoDBObject.newBuilder
-    eventBuilder += "name" -> "Jamal Burgess"
-    eventBuilder += "orientation" -> "Anew"
+  def testMongo(db_name: String, name: String, orientation: String, style:String) = {
+     val mongo = db(db_name)
 
-    val mongoEvent = eventBuilder.result
+    val eBuilder = MongoDBObject.newBuilder
+    eBuilder += "name" -> name
+    eBuilder += "orientation" -> orientation
+    eBuilder += "style" -> style
+    val mongoEvent = eBuilder.result
     println("Mongo Events: %s".format(mongoEvent))
     mongo.insert(mongoEvent)
   }
