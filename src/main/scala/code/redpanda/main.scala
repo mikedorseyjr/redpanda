@@ -6,12 +6,14 @@ import java.net.{URLConnection, URL}
 import scala.xml._
 import Stream._
 
-
-object redpanda{
+// TODO (feed list, )
+object redpanda {
 
   def main(args: Array[String]) {
   println("Hey")
   // startMongo
+  val mongoPersist = new MongoDBPersistence
+  mongoPersist.startMongo
   val hunter = new Source
   println(hunter.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
   }
@@ -19,9 +21,9 @@ object redpanda{
 
 }
 
-case class Persistance {}
+abstract class Persistence {}
 
-sealed trait MongoDBPersistence {
+class MongoDBPersistence extends Persistence {
   def startMongo = {
     val mongoConn = MongoConnection()
     val db = mongoConn("forest")
@@ -130,3 +132,5 @@ end
   
 fetch_job_feed()
 */
+
+
