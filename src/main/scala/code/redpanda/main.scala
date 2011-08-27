@@ -2,6 +2,8 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.conversions.scala._
 import com.mongodb.casbah.query
 
+import java.net.{URLConnection, URL}
+import scala.xml._
 import Stream._
 
 
@@ -37,7 +39,6 @@ sealed trait MongoDBPersistence extends Persistence {
 
 
 
-
 trait Engine{}
 // Sources to pull data from.  dice, twitter, etc...maybe some sort of web crawler???
 /*
@@ -46,12 +47,16 @@ trait Engine{}
 */
 class Source {
 
-  def fetchJob:Stream(Any) = {
+  def fetchJob(uri: String ): Stream(Any) = {
     // lets see what my quirky mind puts together
     // long term I don't know if there's any min/max amount of data that can be collected in 
     // one swoop.  Is a stream bad idea?
 
-    
+    // set uri
+    // visit location and grab xml seq
+    val url = new URL(uri)
+    val connection = url.openConnection
+    XML.load(connection.getInputStream)
   }
 }
 
