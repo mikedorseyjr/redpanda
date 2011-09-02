@@ -7,4 +7,5 @@ scalaVersion := "2.9.0-1"
 
  
 libraryDependencies ++= Seq("junit" % "junit" % "4.8" % "test",
-"com.mongodb.casbah" %% "casbah" % "2.1.5.0")
+"com.mongodb.casbah" %% "casbah" % "2.1.5.0",
+"net.debasishg" % "sjson_2.8.0" % "0.8")

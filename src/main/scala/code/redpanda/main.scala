@@ -7,6 +7,9 @@ import scala.xml._
 import Stream._
 
 // TODO (feed list, )
+// TODO Generic source class
+// TODO Persistence layer
+
 object redpanda {
 
   def main(args: Array[String]) {
@@ -14,7 +17,7 @@ object redpanda {
   // startMongo
   val mongoPersist = new MongoDBPersistence
   mongoPersist.startMongo
-  mongoPersist.testMongo("redwood", "Jamal", "New", "test")
+  mongoPersist.testMongo(MongoConnection("forest"), "Jamal", "New", "test")
   val hunter = new Source
   println(hunter.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
   }
@@ -30,11 +33,12 @@ class MongoDBPersistence extends Persistence {
     val db = mongoConn("forest")
     db.dropDatabase()
     println("Mongo Started")
+    //mongoPersist.testMongo(db, "Jamal", "New", "test")
   }
       
 
-  def testMongo(db_name: String, name: String, orientation: String, style:String) = {
-     val mongo = db(db_name)
+  def testMongo(db_name: MongoConnection, name: String, orientation: String, style:String) = {
+     val mongo = db_name
 
     val eBuilder = MongoDBObject.newBuilder
     eBuilder += "name" -> name
@@ -42,25 +46,20 @@ class MongoDBPersistence extends Persistence {
     eBuilder += "style" -> style
     val mongoEvent = eBuilder.result
     println("Mongo Events: %s".format(mongoEvent))
-    mongo.insert(mongoEvent)
+   // mongo.insert(mongoEvent)
   }
+  
 }
 
-
-
-trait Engine{}
-// Sources to pull data from.  dice, twitter, etc...maybe some sort of web crawler???
-/*
- *
-  
-*/
 class Source {
+
 
   def fetchJob(uri: String ):Elem = {
     // lets see what my quirky mind puts together
     // long term I don't know if there's any min/max amount of data that can be collected in 
     // one swoop.  Is a stream bad idea?
 
+    
     // set uri
     // visit location and grab xml seq
     val url = new URL(uri)
@@ -73,6 +72,13 @@ class Source {
  //   val data_stream = cons(resource,cons("",Stream.empty))
   
 }
+
+trait Engine { }
+// Sources to pull data from.  dice, twitter, etc...maybe some sort of web crawler???
+/*
+ *
+  
+*/
 
 
 /*
