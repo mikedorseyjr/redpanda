@@ -1,3 +1,4 @@
+import com.mongodb._
 import com.mongodb.casbah.Imports._
 import com.mongodb.casbah.commons.conversions.scala._
 import com.mongodb.casbah.query
@@ -16,10 +17,10 @@ object redpanda {
   println("Hey")
   // startMongo
   val mongoPersist = new MongoDBPersistence
-  mongoPersist.startMongo
-  mongoPersist.testMongo(MongoConnection("forest"), "Jamal", "New", "test")
-  val hunter = new Source
-  println(hunter.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
+  mongoPersist.startMongo("forest")//, "Location")
+  // mongoPersist.testMongo(MongoConnection("forest"), "Jamal", "New", "test")
+  // val hunter = new Source
+  // println(hunter.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
   }
   
 
@@ -28,12 +29,27 @@ object redpanda {
 abstract class Persistence {}
 
 class MongoDBPersistence extends Persistence {
-  def startMongo = {
-    val mongoConn = MongoConnection()
-    val db = mongoConn("forest")
-    db.dropDatabase()
+ 
+  def startMongo(db_name: String) = {//, coll: String) = {//, source: Source*) = {
+    val job = new Source
+    val mongoColl = MongoConnection()("testdoc")
+    // var db = mongoConn(db_name)
+    //db.dropDatabase()
+    //var collection = mongoConn("list")
     println("Mongo Started")
+    //val mongoColl = mongoConn("testdoc")
+    val rObject= MongoDBObject("location" -> "http://rss.dice.com//system/raleigh-jobs.xml",
+                               "node" -> job.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
+    mongoColl += rObject
+    mongoColl.find()
+    
+    /*                           
+    val builder = MongoDBObject.newBuilder
+    builder += "location" -> "http://rss.dice.com//system/raleigh-jobs.xml"
+    builder += "node" -> job.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml")
+    val newObj += builder.result
     //mongoPersist.testMongo(db, "Jamal", "New", "test")
+*/
   }
       
 
