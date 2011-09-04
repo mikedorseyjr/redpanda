@@ -32,7 +32,7 @@ class MongoDBPersistence extends Persistence {
  
   def startMongo(db_name: String) = {//, coll: String) = {//, source: Source*) = {
     val job = new Source
-    val mongoColl = MongoConnection()("testdoc")
+    val mongoDB = MongoConnection().getDB("testdoc")
     // var db = mongoConn(db_name)
     //db.dropDatabase()
     //var collection = mongoConn("list")
@@ -40,8 +40,10 @@ class MongoDBPersistence extends Persistence {
     //val mongoColl = mongoConn("testdoc")
     val rObject= MongoDBObject("location" -> "http://rss.dice.com//system/raleigh-jobs.xml",
                                "node" -> job.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
-    mongoColl += rObject
-    mongoColl.find()
+    var mongoColl = if (!mongoDB.collectionExists("sites")) mongoDB.createCollection("sites", rObject) else mongoDB.getCollection("sites")
+    mongoColl.find(rObject)
+    //mongoColl += rObject
+    //mongoColl.find()
     
     /*                           
     val builder = MongoDBObject.newBuilder
