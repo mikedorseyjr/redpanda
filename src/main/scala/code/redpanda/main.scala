@@ -5,6 +5,9 @@ import com.mongodb.casbah.query
 
 import java.net.{URLConnection, URL}
 import scala.xml._
+import code.redpanda.data_fetching._
+
+
 import Stream._
 
 // TODO (feed list, )
@@ -16,8 +19,21 @@ object redpanda {
   def main(args: Array[String]) {
   println("Hey")
   // startMongo
-  val mongoPersist = new MongoDBPersistence
-  mongoPersist.startMongo("forest")//, "Location")
+  //val mongoPersist = new MongoDBPersistence
+  //mongoPersist.startMongo("forest")//, "Location")
+    // Test code for fetcher.  Should put in some scala test file but eh, will have to figure out how
+    // to use these test cases provided by sbt
+    /*
+    val n = new RssFetcher("http://rss.dice.com///system/atlanta-jobs.xml")
+    println("Get an n")
+    val n_fetched = n.fetch()
+    println(n_fetched.toString()) */
+
+    // New test for Dice Fetcher
+    // Do Mongo Initialization here
+        val mongoDB = MongoConnection().getDB("job_trender")
+        val d = new DiceFetcher(new MongoCollection(mongoDB.getCollection("fetch_data")),new MongoCollection(mongoDB.getCollection("job_entries")))
+        d.fetchJobs()
   // mongoPersist.testMongo(MongoConnection("forest"), "Jamal", "New", "test")
   // val hunter = new Source
   // println(hunter.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
