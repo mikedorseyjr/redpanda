@@ -11,6 +11,7 @@ import com.mongodb.casbah.query
 
 import java.net.{URLConnection, URL}
 import scala.xml._
+import scala.io._
 
 
 
@@ -101,9 +102,7 @@ abstract class Fetcher( val url: String, val fetch_type: String ){
         // The below doesn't work.  Maybe the java classes don't like real URLs with form variables
         // and the like.  This needs to be figured out.
 
-          println("Still stuck getting the body of the message")
-          var j_body = XML.load(j_url.openConnection().getInputStream()) // Jamal, the code fails HERE!!!!
-          println("Got the body of the message. Seriously")
+          var j_body = scala.io.Source.fromURL(j_url).mkString
           var j_save = MongoDBObject("title" -> title,
                         "link" -> link,
                         "body" -> j_body.toString());
