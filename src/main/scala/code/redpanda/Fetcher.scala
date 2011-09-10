@@ -92,12 +92,19 @@ abstract class Fetcher( val url: String, val fetch_type: String ){
       // Implement factory pattern and use it to fetch RSS feed and other based job listings
       var j_link = l("url").toString
       val fetch_type = l("fetch_type").toString
+      val location = l("location").toString
       val r_fetch = Fetcher.createFetcher(fetch_type, j_link)
       val job_listing = r_fetch.xmlFetch()
       for ( job_entry <- (job_listing\\"item")){
           var title = (job_entry\"title").text
           var link = (job_entry\"link").text
           // Now fetch the URL in the site item and make that the body of the job entry
+          // Check to make sure we don't have any job entries with this link already.
+         val find_entry = MongoDBObject("title" -> title,
+                              "link" -> link,
+                              "region" -> location)
+          val job_count = job_docs.count(find_entry)
+        if (job_count <= 0){
           var j_url = new URL(link)
         // The below doesn't work.  Maybe the java classes don't like real URLs with form variables
         // and the like.  This needs to be figured out.
@@ -105,8 +112,10 @@ abstract class Fetcher( val url: String, val fetch_type: String ){
           var j_body = scala.io.Source.fromURL(j_url).mkString
           var j_save = MongoDBObject("title" -> title,
                         "link" -> link,
-                        "body" -> j_body.toString());
+                        "body" -> j_body.toString(),
+                        "region" -> location);
           job_docs.save(j_save)
+        }
       }
     }
   }

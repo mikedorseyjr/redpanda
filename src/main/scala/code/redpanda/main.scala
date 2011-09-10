@@ -33,7 +33,13 @@ object redpanda {
     // Do Mongo Initialization here
         val mongoDB = MongoConnection().getDB("job_trender")
         val d = new DiceFetcher(new MongoCollection(mongoDB.getCollection("fetch_data")),new MongoCollection(mongoDB.getCollection("job_entries")))
+        try {
         d.fetchJobs()
+        }catch {
+          case e if ( e.getMessage == null ) => println("unknow exception with no message")
+          case e => println("Got an exception of "+e.getMessage)
+        }
+      println("Done with fetch")
   // mongoPersist.testMongo(MongoConnection("forest"), "Jamal", "New", "test")
   // val hunter = new Source
   // println(hunter.fetchJob("http://rss.dice.com//system/raleigh-jobs.xml"))
